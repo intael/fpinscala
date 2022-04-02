@@ -1,6 +1,5 @@
 package fpinscala.exercises.datastructures
 
-import fpinscala.answers.datastructures.Tree.Branch
 
 enum Tree[+A]:
   case Leaf(value: A)
@@ -33,9 +32,19 @@ enum Tree[+A]:
   }
 
 
-  def fold[B](f: A => B, g: (B, B) => B): B = ???
+  def fold[B](f: A => B, g: (B, B) => B): B = {
+    def dfs(branch: Tree[A]): B = {
+      branch match {
+        case Leaf(value) => f(value)
+        case Branch(left, right) => g(dfs(left), dfs(right))
+      }
+    }
 
-  def sizeViaFold: Int = ???
+    dfs(this)
+  }
+
+
+  def sizeViaFold: Int = this.fold(_ => 1, 1 + _ + _)
 
   def depthViaFold: Int = ???
 
