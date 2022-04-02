@@ -13,9 +13,15 @@ enum Option[+A]:
     case _ => None
   }
 
-  def getOrElse[B >: A](default: => B): B = ???
+  def getOrElse[B >: A](default: => B): B = this match {
+    case Some(value) => value
+    case _ => default
+  }
 
-  def flatMap[B](f: A => Option[B]): Option[B] = ???
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
+    case Some(value) => f(value)
+    case _ => None
+  }
 
   def orElse[B >: A](ob: => Option[B]): Option[B] = ???
 
