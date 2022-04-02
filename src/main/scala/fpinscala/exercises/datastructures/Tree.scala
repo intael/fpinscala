@@ -52,7 +52,12 @@ object Tree:
     case Leaf(_) => 1
     case Branch(l, r) => 1 + size(l) + size(r)
 
-  extension (t: Tree[Int]) def firstPositive: Option[Int] = ???
+  extension (t: Tree[Int]) def firstPositive: Option[Int] =
+    t match {
+      case Leaf(value) if value > 0 => Some(value)
+      case Leaf(value) => None
+      case Branch(left, right) => Tree.firstPositive(left).orElse(Tree.firstPositive(right))
+    }
 
   extension (t: Tree[Int]) def maximum: Int = t match {
     case Leaf(value) => value
