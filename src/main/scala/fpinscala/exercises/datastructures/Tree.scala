@@ -21,7 +21,17 @@ enum Tree[+A]:
     dig(this, 0)
   }
 
-  def map[B](f: A => B): Tree[B] = ???
+  def map[B](f: A => B): Tree[B] = {
+    def dfs(branch: Tree[A]): Tree[B] = {
+      branch match {
+        case Leaf(value) => Leaf(f(value))
+        case Branch(left, right) => Branch(dfs(left), dfs(right))
+      }
+    }
+
+    dfs(this)
+  }
+
 
   def fold[B](f: A => B, g: (B, B) => B): B = ???
 
