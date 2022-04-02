@@ -54,6 +54,10 @@ object Option:
     case _ => None
   }
 
-  def sequence[A](as: List[Option[A]]): Option[List[A]] = ???
+  def sequence[A](as: List[Option[A]]): Option[List[A]] =
+    as match {
+      case head :: tail => head.flatMap(thisHead => sequence(tail).map(thisHead :: _))
+      case Nil => Some(Nil)
+    }
 
   def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = ???
