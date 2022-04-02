@@ -23,9 +23,15 @@ enum Option[+A]:
     case _ => None
   }
 
-  def orElse[B >: A](ob: => Option[B]): Option[B] = ???
+  def orElse[B >: A](ob: => Option[B]): Option[B] = this match {
+    case None => ob
+    case _ => this
+  }
 
-  def filter(f: A => Boolean): Option[A] = ???
+  def filter(f: A => Boolean): Option[A] = this match {
+    case Some(value) if f(value) => Some(value)
+    case _ => None
+  }
 
 object Option:
 
