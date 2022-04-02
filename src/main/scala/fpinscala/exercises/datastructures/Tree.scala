@@ -10,14 +10,10 @@ enum Tree[+A]:
     case Branch(l, r) => 1 + l.size + r.size
 
   def depth: Int = {
-    def dig(branch: Tree[A], depthSoFar: Int): Int = {
-      branch match {
-        case Leaf(_) => depthSoFar
-        case Branch(left, right) => math.max(dig(left, depthSoFar + 1), dig(right, depthSoFar + 1))
-      }
+    this match {
+      case Leaf(_) => 0
+      case Branch(left, right) => math.max(left.depth + 1, right.depth + 1)
     }
-
-    dig(this, 0)
   }
 
   def map[B](f: A => B): Tree[B] = {
@@ -46,9 +42,9 @@ enum Tree[+A]:
 
   def sizeViaFold: Int = this.fold(_ => 1, 1 + _ + _)
 
-  def depthViaFold: Int = ???
+  def depthViaFold: Int = this.fold(_ => 0, (left, right) => math.max(left + 1, right + 1))
 
-  def mapViaFold[B](f: A => B): Tree[B] = ???
+  def mapViaFold[B](f: A => B): Tree[B] = this.fold(value => Leaf(f(value)), (left, right) => Branch(left, right))
 
 object Tree:
 
