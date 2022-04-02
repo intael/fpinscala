@@ -17,6 +17,7 @@ enum Tree[+A]:
         case Branch(left, right) => math.max(dig(left, depthSoFar + 1), dig(right, depthSoFar + 1))
       }
     }
+
     dig(this, 0)
   }
 
@@ -38,6 +39,9 @@ object Tree:
 
   extension (t: Tree[Int]) def firstPositive: Option[Int] = ???
 
-  extension (t: Tree[Int]) def maximum: Int = ???
+  extension (t: Tree[Int]) def maximum: Int = t match {
+    case Leaf(value) => value
+    case Branch(left, right) => math.max(Tree.maximum(left), Tree.maximum(right))
+  }
 
   extension (t: Tree[Int]) def maximumViaFold: Int = ???
