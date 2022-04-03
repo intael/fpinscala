@@ -60,4 +60,5 @@ object Option:
       case Nil => Some(Nil)
     }
 
-  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = ???
+  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] =
+    sequence(as.map(f))
