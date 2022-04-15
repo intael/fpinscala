@@ -30,7 +30,7 @@ enum Either[+E, +A]:
   def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
     (this, b) match
       case (Left(value), _) => Left(value)
-      case (Right(value), Left(other)) => Left(other)
+      case (Right(_), Left(other)) => Left(other)
       case (Right(value), Right(other)) => Right(f(value, other))
 
 object Either:
@@ -43,7 +43,14 @@ object Either:
 
   def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
 
-  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = ???
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
+    es match
+      case Right(head) :: tail => sequence(tail) match {
+        case Right(list) => Right(head :: list)
+        case Left(error) => Left(error)
+      }
+      case Left(error) :: _ => Left(error)
+      case Nil => Right(Nil)
 
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
     if xs.isEmpty then
