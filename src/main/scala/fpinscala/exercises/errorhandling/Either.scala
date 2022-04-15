@@ -41,7 +41,17 @@ object Either:
       case e: Exception => Left(e)
     }
 
-  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
+  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+    es match
+      case head :: tail =>
+        f(head) match {
+          case Right(v) => traverse(tail)(f) match {
+            case Right(list) => Right(v :: list)
+            case Left(e) => Left(e)
+          }
+          case Left(error) => Left(error)
+        }
+      case Nil => Right(Nil)
 
   def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
     es match
