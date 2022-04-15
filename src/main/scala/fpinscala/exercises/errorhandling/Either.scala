@@ -1,33 +1,53 @@
 package fpinscala.exercises.errorhandling
 
 // Hide std library `Either` since we are writing our own in this chapter
+
 import scala.{Either as _, Left as _, Right as _}
 import scala.util.control.NonFatal
 
-enum Either[+E,+A]:
+enum Either[+E, +A]:
   case Left(get: E)
   case Right(get: A)
 
-  def map[B](f: A => B): Either[E, B] = ???
+  def map[B](f: A => B): Either[E, B] =
+    this match {
+      case Right(value) => Right(f(value))
+      case Left(value) => Left(value)
+    }
 
-  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] = ???
+  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] =
+    this match {
+      case Left(value) => Left(value)
+      case Right(value) => f(value)
+    }
 
-  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B] = ???
-
+  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B] =
+    this match
+      case Left(_) => b
+      case Right(value) => Right(value)
+        
+        
   def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = ???
 
 object Either:
-  def traverse[E,A,B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
 
-  def sequence[E,A](es: List[Either[E,A]]): Either[E,List[A]] = ???
+  def Try[A](a: => A): Either[Exception, A] =
+    try Right(a)
+    catch {
+      case e: Exception => Left(e)
+    }
 
-  def mean(xs: IndexedSeq[Double]): Either[String, Double] = 
+  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = ???
+
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = ???
+
+  def mean(xs: IndexedSeq[Double]): Either[String, Double] =
     if xs.isEmpty then
       Left("mean of empty list!")
-    else 
+    else
       Right(xs.sum / xs.length)
 
-  def safeDiv(x: Int, y: Int): Either[Throwable, Int] = 
+  def safeDiv(x: Int, y: Int): Either[Throwable, Int] =
     try Right(x / y)
     catch case NonFatal(t) => Left(t)
 
