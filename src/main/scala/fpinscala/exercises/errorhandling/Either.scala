@@ -25,9 +25,13 @@ enum Either[+E, +A]:
     this match
       case Left(_) => b
       case Right(value) => Right(value)
-        
-        
-  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = ???
+
+
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
+    (this, b) match
+      case (Left(value), _) => Left(value)
+      case (Right(value), Left(other)) => Left(other)
+      case (Right(value), Right(other)) => Right(f(value, other))
 
 object Either:
 
