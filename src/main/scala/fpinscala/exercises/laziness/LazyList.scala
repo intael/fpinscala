@@ -28,7 +28,10 @@ enum LazyList[+A]:
       case _ => Empty
 
 
-  def drop(n: Int): LazyList[A] = ???
+  def drop(n: Int): LazyList[A] =
+    this match
+      case Cons(_, t) if n > 0 => t().drop(n - 1)
+      case _ => this
 
   def takeWhile(p: A => Boolean): LazyList[A] = ???
 
